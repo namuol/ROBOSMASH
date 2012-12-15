@@ -3,6 +3,7 @@ ig.module(
 ).requires(
   'impact.entity'
   'game.entities.impact'
+  'game.entities.decal'
 ).defines ->
 
   STICKY_DURATION = 30
@@ -49,14 +50,16 @@ ig.module(
       @prevy = @posy
 
       if @released < 0 and ig.input.pressed @button
-       @stickX = @crosshair.pos.x - 8
-       @stickY = @crosshair.pos.y - 8
-       @released = 0
-       @punching = true
+        @stickX = @crosshair.pos.x - 8
+        @stickY = @crosshair.pos.y - 8
+        @released = 0
+        @punching = true
+        @decald = false
 
       if not @punching
         @posx = @startx + ig.game.screen.x
         @posy = @starty + ig.game.screen.y
+        @stickY = @posy
       else
         if ++@released >= STICKY_DURATION
           @released = -1
@@ -67,9 +70,16 @@ ig.module(
       @posx += @velx
       @posy += @vely
 
-      if false and @posy > @stickY
+      if @posy > @stickY
         @pos.x = @stickX
         @pos.y = @stickY
+        if not @decald
+          ig.game.spawnEntity 'EntityDecal', @pos.x-8, @pos.y,
+            anim: 'impact0'
+            flipx: Math.random() < 0.5
+            flipy: Math.random() < 0.5
+          ig.game.sortEntitiesDeferred()
+          @decald = true
       else
         @pos.x = @posx
         @pos.y = @posy
