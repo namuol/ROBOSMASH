@@ -34,7 +34,8 @@ ig.module(
       dy = dy / count
       i = 0
       while i < count
-        ig.game.spawnEntity 'EntityImpact', @prevx+i*dx, @prevy+i*dy, {}
+        ig.game.spawnEntity 'EntityImpact', @prevx+i*dx, @prevy+i*dy,
+          fist: @
         ++i
 
     update: ->

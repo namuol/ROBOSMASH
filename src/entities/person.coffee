@@ -3,7 +3,7 @@ ig.module(
 ).requires(
   'impact.entity'
 ).defines ->
-  ROW_COUNT = 8
+  ROW_COUNT = 1
   EPSILON = 1
 
   window.EntityPerson = ig.Entity.extend
@@ -11,15 +11,16 @@ ig.module(
       x: 7
       y: 8
     type: ig.Entity.TYPE.B
+    mass: 1
     checkAgainst: ig.Entity.TYPE.A
-    animSheet: new ig.AnimationSheet 'media/ppl.png', 8,8
+    animSheet: new ig.AnimationSheet 'media/ppl.png', 8,9
     init: (x,y, settings) ->
       @parent x,y, settings
       @num = Math.floor(Math.random() * ROW_COUNT)
       @addAnim 'idle_down', 5, [0], true
       @addAnim 'idle_up', 5, [3], true
-      @addAnim 'run_down', 0.25, [1,2]
-      @addAnim 'run_up', 0.25, [4,5]
+      @addAnim 'run_down', 0.15, [1,0,2,0]
+      @addAnim 'run_up', 0.15, [4,3,5,3]
 
       if @num
         for own k,anim of @anims
@@ -45,5 +46,8 @@ ig.module(
 
       @parent arguments...
 
-    check: ->
+    check: (other) ->
+      if other.fist
+        other.fist.vel.x *= 1 - (@mass/100)
+        other.fist.vel.y *= 1 - (@mass/100)
       @kill()
