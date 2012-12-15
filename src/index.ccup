@@ -1,0 +1,12 @@
+doctype 5
+html ->
+  head ->
+    title 'Impact Game'
+
+    link rel:'stylesheet', href:'style.css'
+
+    script type:'text/javascript', src:'lib/impact/impact.js'
+    script type:'text/javascript', src:'lib/game/main.js'
+
+body ->
+  canvas id:'canvas'
