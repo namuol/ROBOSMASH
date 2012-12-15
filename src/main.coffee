@@ -5,6 +5,7 @@ ig.module(
   'impact.font'
   'game.entities.crosshair'
   'game.entities.fist'
+  'game.entities.person'
 ).defines ->
   MyGame = ig.Game.extend
     font: new ig.Font('media/04b03.font.png')
@@ -26,6 +27,9 @@ ig.module(
       @screen =
         x: 0
         y: 16
+
+      if Math.floor(Math.random() * 100) < 5
+        @spawnEntity 'EntityPerson', Math.random()*150, Math.random()*200, {}
 
     draw: ->
       # Draw all entities and backgroundMaps

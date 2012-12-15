@@ -20,6 +20,7 @@ ig.module(
     vely: 0
     animSheet: new ig.AnimationSheet 'media/gfx.png', 16, 16
     zIndex: 20
+    released: -1
     init: ->
       @addAnim 'idle', 5, [8], true
       @parent arguments...
@@ -40,7 +41,7 @@ ig.module(
       @prevx = @pos.x
       @prevy = @pos.y
 
-      if ig.input.pressed 'punch'
+      if @released < 0 and ig.input.pressed 'punch'
        @stickX = ig.input.mouse.x - 8
        @stickY = ig.input.mouse.y + 8
        @released = 0
@@ -51,6 +52,7 @@ ig.module(
         @pos.y = @starty
       else
         if ++@released >= STICKY_DURATION
+          @released = -1
           @punching = false
         @velx += ((@stickX - @pos.x) - @velx) * 0.5
         @vely += ((@stickY - @pos.y) - @vely) * 0.5
