@@ -11,7 +11,6 @@ ig.module(
       x: 7
       y: 8
     type: ig.Entity.TYPE.B
-    mass: 1
     checkAgainst: ig.Entity.TYPE.A
     animSheet: new ig.AnimationSheet 'media/ppl.png', 8,9
     init: (x,y, settings) ->
@@ -46,8 +45,8 @@ ig.module(
 
       @parent arguments...
 
+      if @pos.y < ig.game.screen.y
+        @kill()
+
     check: (other) ->
-      if other.fist
-        other.fist.vel.x *= 1 - (@mass/100)
-        other.fist.vel.y *= 1 - (@mass/100)
       @kill()

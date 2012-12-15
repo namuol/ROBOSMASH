@@ -16,38 +16,47 @@ ig.module(
     clearColor: '#d6eca3'
     init: ->
       # Initialize your game here; bind keys etc.
-      ig.input.bind ig.KEY.Z, 'punch'
-      ig.input.bind ig.KEY.C, 'grasp'
+      ig.input.bind ig.KEY.Z, 'punchL'
+      ig.input.bind ig.KEY.C, 'punchR'
 
       ig.input.initMouse()
-      @spawnEntity 'EntityFist', 0,0, {}
-      @spawnEntity 'EntityCrosshair', 0,0, {}
-
+      ch = @spawnEntity 'EntityCrosshair', 0,0, {}
+      @spawnEntity 'EntityFist', 0,0,
+        button: 'punchL'
+        crosshair: ch
+      @spawnEntity 'EntityFist', 134,0,
+        button: 'punchR'
+        crosshair: ch
+    time: Date.now()
+    screen:
+      x:0
+      y:0
     update: ->
       # Update all entities and backgroundMaps
-      @parent()
 
-      # Add your own, additional update code here
-      @screen =
-        x: 0
-        y: 16
+      @time = Date.now()
+      sy = Math.sin(@time / 150)
 
-      ###
-      if Math.floor(Math.random() * 100) < 5
-        @spawnEntity 'EntityPerson', Math.random()*150, Math.random()*200, {}
+      if sy > 0
+        @screen.y += sy * 2
+
+      if Math.floor(Math.random() * 100) < 3
+        @spawnEntity 'EntityPerson', Math.random()*150, @screen.y + Math.random()*200, {}
 
       if Math.floor(Math.random() * 100) < 1
-        @spawnEntity 'EntityVehicle', -17, Math.random()*200, {}
-      ###
+        @spawnEntity 'EntityVehicle', -17, @screen.y + Math.random()*200, {}
 
-      if Math.floor(Math.random() * 100) < 5
-        @spawnEntity 'EntityFiretruck', -17, Math.random()*200, {}
+      if Math.floor(Math.random() * 100) < 0.33
+        @spawnEntity 'EntityBus', -17, @screen.y + Math.random()*200, {}
+
+      if Math.floor(Math.random() * 100) < 0.15
+        @spawnEntity 'EntityFiretruck', -17, @screen.y + Math.random()*200, {}
+
+      @parent()
 
     draw: ->
       # Draw all entities and backgroundMaps
       @parent()
-      
-      # Add your own drawing code here
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC
   ig.main '#canvas', MyGame, 60, 150, 200, 3

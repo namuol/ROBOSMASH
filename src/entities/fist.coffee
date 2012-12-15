@@ -14,52 +14,65 @@ ig.module(
     size:
       x: 16
       y: 16
-    startx: 10
-    starty: 16
     velx: 0
     vely: 0
     animSheet: new ig.AnimationSheet 'media/gfx.png', 16, 16
+    decals: new ig.AnimationSheet 'media/large_decals.png', 32, 32
     zIndex: 20
     released: -1
-    init: ->
-      @addAnim 'idle', 5, [8], true
+    posx: 0
+    posy: 0
+    init: (x,y, settings) ->
       @parent arguments...
 
+      @addAnim 'idle', 5, [8], true
+      @startx = x
+      @starty = y
+
     spawnImpacts: ->
-      dx = @pos.x - @prevx
-      dy = @pos.y - @prevy
+      dx = @posx - @prevx
+      dy = @posy - @prevy
       d = Math.sqrt(dx*dx + dy*dy)
       count = Math.ceil(d / RADIUS)
       dx = dx / count
       dy = dy / count
       i = 0
       while i < count
-        ig.game.spawnEntity 'EntityImpact', @prevx+i*dx, @prevy+i*dy,
-          fist: @
+        _dy = @prevy+i*dy
+        if _dy <= @stickY
+          ig.game.spawnEntity 'EntityImpact', @prevx+i*dx, _dy,
+            fist: @
         ++i
 
     update: ->
-      @prevx = @pos.x
-      @prevy = @pos.y
+      @prevx = @posx
+      @prevy = @posy
 
-      if @released < 0 and ig.input.pressed 'punch'
-       @stickX = ig.input.mouse.x - 8
-       @stickY = ig.input.mouse.y + 8
+      if @released < 0 and ig.input.pressed @button
+       @stickX = @crosshair.pos.x - 8
+       @stickY = @crosshair.pos.y - 8
        @released = 0
        @punching = true
 
       if not @punching
-        @pos.x = @startx
-        @pos.y = @starty
+        @posx = @startx + ig.game.screen.x
+        @posy = @starty + ig.game.screen.y
       else
         if ++@released >= STICKY_DURATION
           @released = -1
           @punching = false
-        @velx += ((@stickX - @pos.x) - @velx) * 0.5
-        @vely += ((@stickY - @pos.y) - @vely) * 0.5
+        @velx += ((@stickX - @posx) - @velx) * 0.5
+        @vely += ((@stickY - @posy) - @vely) * 0.5
 
-      @pos.x += @velx
-      @pos.y += @vely
+      @posx += @velx
+      @posy += @vely
+
+      if false and @posy > @stickY
+        @pos.x = @stickX
+        @pos.y = @stickY
+      else
+        @pos.x = @posx
+        @pos.y = @posy
 
       if @punching
         @spawnImpacts()
