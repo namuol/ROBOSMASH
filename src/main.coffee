@@ -1,28 +1,22 @@
 ig.module(
   'game.main'
 ).requires(
-  'impact.game',
-  'impact.font',
-
-  'game.entities.paddle-cpu',
-  'game.entities.paddle-player',
-  'game.entities.puck',
-
-  'game.levels.main'
-
+  'impact.game'
+  'impact.font'
+  'game.entities.crosshair'
+  'game.entities.fist'
 ).defines ->
   MyGame = ig.Game.extend
     font: new ig.Font('media/04b03.font.png')
+    gfx: new ig.Font('media/gfx.png')
     init: ->
       # Initialize your game here; bind keys etc.
-      ig.input.bind ig.KEY.W, 'p1up'
-      ig.input.bind ig.KEY.S, 'p1down'
+      ig.input.bind ig.KEY.Z, 'punch'
+      ig.input.bind ig.KEY.C, 'grasp'
 
-      ig.input.bind ig.KEY.UP_ARROW, 'p2up'
-      ig.input.bind ig.KEY.DOWN_ARROW, 'p2down'
-
-      @loadLevel LevelMain
       ig.input.initMouse()
+      @spawnEntity 'EntityFist', 0,0, {}
+      @spawnEntity 'EntityCrosshair', 0,0, {}
 
     update: ->
       # Update all entities and backgroundMaps
@@ -40,4 +34,4 @@ ig.module(
       # Add your own drawing code here
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC
-  ig.main '#canvas', MyGame, 30, 256, 160, 3
+  ig.main '#canvas', MyGame, 60, 150, 200, 3
