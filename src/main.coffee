@@ -32,7 +32,7 @@ ig.module(
 
   LEVEL_PROGRESS = [
       type:'suburban'
-      time: 30
+      time: 5
       dist: 3000
     ,
       type:'suburban'
@@ -76,7 +76,9 @@ ig.module(
     gfx: new ig.Font('media/gfx.png')
     clearColor: '#d6eca3'
     progress: 0
+    over: false
     gameOver: (reason) ->
+      @over = true
       if confirm 'Game Over: ' + reason + '\nYour score was '+@score+'\nTry Again?'
         @init()
 
@@ -89,6 +91,7 @@ ig.module(
       @score += score
 
     pasteLevel: (lvl, y) ->
+      console.log 'PASTED'
       # Delete first half of rows:
       i=0
       while i < 15
@@ -108,6 +111,11 @@ ig.module(
         ++y
 
     init: ->
+      @screen =
+        x:0
+        y:0
+
+      @over = false
       @lives = START_LIVES
       @score = 0
 
@@ -116,11 +124,11 @@ ig.module(
       @distLeft = LEVEL_PROGRESS[@progress].dist
 
       @loadLevel LevelMain
+
       i=0
       for row in @backgroundMaps[1].data
-        j=0
-        for tile in row
-          @backgroundMaps[1].data[i][j] = 0
+        @backgroundMaps[1].data[i] = (0 for n in [0..row.length])
+        console.log @backgroundMaps[1].data[i]
         ++i
 
 
@@ -181,6 +189,7 @@ ig.module(
       @head.feet = []
       @head.feet[0] = @f1
       @head.feet[1] = @f2
+
     time: Date.now()
     tock: 0
     screen:
@@ -246,7 +255,7 @@ ig.module(
 
       @parent()
 
-      if @timeLeft < 0
+      if @timeLeft < 0 and !@over
         @gameOver 'you didn\'t reach the checkpoint in time.'
 
     draw: ->
