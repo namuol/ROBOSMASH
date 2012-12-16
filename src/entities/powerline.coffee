@@ -24,6 +24,11 @@ ig.module(
       if @flipx
         for own k,a of @anims
           a.flip.x = true
+    update: ->
+      @parent arguments...
+
+      if (@pos.y + @size.y) < ig.game.screen.y
+        @kill()
 
 
     check: (other) ->

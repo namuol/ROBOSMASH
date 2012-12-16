@@ -17,10 +17,13 @@ ig.module(
     size:
       x: 16
       y: 16
+    offset:
+      x:8
+      y:8
     velx: 0
     vely: 0
     gravityFactor: 0
-    animSheet: new ig.AnimationSheet 'media/gfx.png', 16, 16
+    animSheet: new ig.AnimationSheet 'media/gfx.png', 32,32
     decals: new ig.AnimationSheet 'media/large_decals.png', 32, 32
     lift: new ig.Sound 'media/sounds/lift.*'
     stomp: new ig.Sound 'media/sounds/stomp.*'
@@ -32,7 +35,7 @@ ig.module(
     init: (x,y, settings) ->
       @parent arguments...
 
-      @addAnim 'idle', 5, [8], true
+      @addAnim 'idle', 5, [1], true
       @startx = x
       @starty = y
 
@@ -112,7 +115,7 @@ ig.module(
             flipy: Math.random() < 0.5
           ig.game.sortEntitiesDeferred()
           @decald = true
-          ig.game.shake 2, 5
+          ig.game.shake 0, 4
           @stomp.volume = 0.75
           @stomp.play()
 

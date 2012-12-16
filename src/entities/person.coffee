@@ -28,6 +28,9 @@ ig.module(
           while i < anim.sequence.length
             anim.sequence[i] += @num * 6
             ++i
+
+      @vel.y = 10 + Math.random()*10
+      @vel.x = -10 + Math.random()*20
     update: ->
       if (@vel.y > EPSILON)
         if @currentAnim != @anims.run_down
@@ -41,12 +44,10 @@ ig.module(
         else if @currentAnim == @anims.run_up
           @currentAnim = @anims.idle_up
 
-      @vel.y += -0.5 + Math.random()
-      @vel.x += -0.5 + Math.random()
 
       @parent arguments...
 
-      if @pos.y < ig.game.screen.y
+      if ((@pos.y + @size.y) < ig.game.screen.y) or (@pos.y > ig.game.screen.y + ig.system.height*1.25)
         @kill()
 
     check: (other) ->

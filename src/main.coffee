@@ -21,6 +21,8 @@ ig.module(
     ig.Sound.FORMAT.M4A
   ]
 
+  ig.Sound.channels = 2
+
   LEVEL_SEGMENTS =
     suburban: [
       LevelStreets0
@@ -98,6 +100,7 @@ ig.module(
       @head.feet[0] = @f1
       @head.feet[1] = @f2
     time: Date.now()
+    tock: 0
     screen:
       x:0
       y:0
@@ -111,12 +114,20 @@ ig.module(
 
     update: ->
       # Update all entities and backgroundMaps
+      ++@tock
+      if @tock % 30 == 0
+        console.log @entities.length
+        #console.log @getEntitiesByType('EntityVehicle').length
 
       @time = Date.now()
 
       #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
-      @screen.y += (@head.pos.y - @screen.y) * 0.15
-
+      dy = (@head.pos.y - @screen.y) * 0.15
+      
+      if true or dy > 0
+        @screen.y += dy
+      
+      ###
       if Math.floor(Math.random() * 100) < 3
         @spawnEntity 'EntityPerson', Math.random()*150, @screen.y + Math.random()*200, {}
         @sortEntitiesDeferred()
@@ -132,6 +143,7 @@ ig.module(
       if Math.floor(Math.random() * 100) < 0.15
         @spawnEntity 'EntityFiretruck', -17, @screen.y + Math.random()*200, {}
         @sortEntitiesDeferred()
+      ###
       
       @shx = 2*Math.random() * @shakex
       @shy = 2*Math.random() * @shakey

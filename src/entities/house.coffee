@@ -1,23 +1,21 @@
 ig.module(
-  'game.entities.vehicle'
+  'game.entities.house'
 ).requires(
   'game.entities.gibs'
   'impact.entity'
 ).defines ->
-  ROW_COUNT = 4
+  ROW_COUNT = 3
   EPSILON = 1
-  MIN_SPD = 70
-  SPD = 10
 
-  window.EntityVehicle = ig.Entity.extend
+  window.EntityHouse = ig.Entity.extend
     gravityFactor: 0
     size:
-      x: 16
-      y: 16
+      x: 17
+      y: 24
     type: ig.Entity.TYPE.B
     mass: 200
     checkAgainst: ig.Entity.TYPE.A
-    animSheet: new ig.AnimationSheet 'media/vehicles.png', 16,13
+    animSheet: new ig.AnimationSheet 'media/houses.png', 17,24
     splode0: new ig.Sound 'media/sounds/splode0.*'
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
@@ -25,7 +23,8 @@ ig.module(
     init: (x,y, settings) ->
       @parent x,y, settings
 
-      @addAnim 'go', 0.05, [0,1]
+      @addAnim 'idle', 5, [0], true
+      @addAnim 'busted', 5, [1], true
 
       @num = Math.floor(Math.random() * ROW_COUNT)
 
@@ -36,22 +35,26 @@ ig.module(
             anim.sequence[i] += @num * 2
             ++i
 
-      @vel.y = 0
-      @vel.x = MIN_SPD + (Math.random() * SPD)
-
-      if @pos.x > 0
-        @currentAnim.flip.x = true
-        @vel.x *= -1
+      if Math.random() < 0.2
+        @hidden = true
+      else
+        @hidden = false
+    draw: ->
+      return if @hidden
+      @parent arguments ...
 
     update: ->
       @parent arguments...
 
-      if (@pos.x > ig.system.width) or (@pos.x < -@size.x)
-        @kill()
-      else if (@pos.y + @size.y) < ig.game.screen.y
+      if (@pos.y + @size.y) < ig.game.screen.y
         @kill()
 
     check: (other) ->
+      return if @hidden
+
+      if @currentAnim == @anims.busted
+        return
+
       snd = choose [
         @splode0
         @splode1
@@ -60,7 +63,6 @@ ig.module(
       ]
       snd.volume = 0.6
       snd.play()
-      @kill()
       i = 0
 
       ig.game.spawnEntity 'EntityGibs', @pos.x, @pos.y,
@@ -71,5 +73,7 @@ ig.module(
         ttl: 50
         count: Math.floor(5 + Math.random()*5)
         anim: @currentAnim
+
+      @currentAnim = @anims.busted
 
       ig.game.sortEntitiesDeferred()

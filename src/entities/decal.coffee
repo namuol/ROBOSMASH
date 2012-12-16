@@ -12,6 +12,7 @@ ig.module(
       x:32
       y:32
     animSheet: new ig.AnimationSheet 'media/large_decals.png', 32,32
+    ttl: 250
     init: (x,y, settings) ->
       @addAnim 'impact0', 5, [0], true
       @parent arguments...
@@ -21,5 +22,12 @@ ig.module(
       @currentAnim.flip.x = @flipy or false
 
     update: ->
+      if --@ttl < 0
+        @kill()
+
+      if @ttl < 60
+        @currentAnim.alpha = @ttl / 100
+
+
       if @pos.y + @size.y < ig.game.screen.y
         @kill()
