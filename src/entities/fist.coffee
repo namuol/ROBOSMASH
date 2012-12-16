@@ -6,7 +6,7 @@ ig.module(
   'game.entities.decal'
 ).defines ->
 
-  HELD_DURATION = 10
+  HELD_DURATION = 7
   STOMP_DELAY = 10
   STICKY_DURATION = 10
   MAX_SPD = 32
@@ -68,7 +68,7 @@ ig.module(
       #if @stompDelay >= 0
       #  --@stompDelay
 
-      if !@punching and !@other.punching and (@released < 0) and (@held == HELD_DURATION) and (!@head.stall > 0)
+      if (!@punching) and (!@other.punching) and (@released < 0) and (@held == HELD_DURATION) and (!@head.stall > 0)
         if @startx < 0
           @stickX = @crosshair.pos.x - 8 - 32
         else
@@ -88,9 +88,10 @@ ig.module(
           @punching = false
         @velx += ((@stickX - @pos.x) - @velx) * 0.5
         @vely += ((@stickY - @pos.y) - @vely) * 0.5
-
-      @pos.x += @velx
-      @pos.y += @vely
+      
+      if not @head.stall > 0
+        @pos.x += @velx
+        @pos.y += @vely
 
       if @punching and @pos.y > @stickY
         @pos.x = @stickX
