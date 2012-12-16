@@ -5,6 +5,7 @@ ig.module(
   'impact.font'
   'game.entities.crosshair'
   'game.entities.fist'
+  'game.entities.head'
   'game.entities.person'
   'game.entities.vehicle'
   'game.entities.bus'
@@ -19,44 +20,79 @@ ig.module(
       ig.input.bind ig.KEY.Z, 'punchL'
       ig.input.bind ig.KEY.C, 'punchR'
 
+      ig.input.bind ig.KEY.MOUSE1, 'graspL'
+      ig.input.bind ig.KEY.MOUSE2, 'graspR'
+
       ig.input.initMouse()
       ch = @spawnEntity 'EntityCrosshair', 0,0, {}
-      @spawnEntity 'EntityFist', 0,0,
-        button: 'punchL'
+      @head = @spawnEntity 'EntityHead', 150/2 - 32,0, {}
+      f1 = @spawnEntity 'EntityFist', -5,40,
+        head: @head
+        punch: ['graspL', 'punchL']
         crosshair: ch
-      @spawnEntity 'EntityFist', 134,0,
-        button: 'punchR'
+      f2 = @spawnEntity 'EntityFist', 50,40,
+        head: @head
+        punch: ['graspR', 'punchR']
         crosshair: ch
+      f1.other = f2
+      f2.other = f1
+      @head.feet = []
+      @head.feet[0] = f1
+      @head.feet[1] = f2
     time: Date.now()
     screen:
       x:0
       y:0
+
+    shakex: 10
+    shakey: 10
+
+    shake: (x,y) ->
+      @shakex += x
+      @shakey += y
+
     update: ->
       # Update all entities and backgroundMaps
 
       @time = Date.now()
-      sy = Math.sin(@time / 150)
 
-      if sy > 0
-        @screen.y += sy * 2
+      #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
+      @screen.y += (@head.plant.y - @screen.y) * 0.05
 
       if Math.floor(Math.random() * 100) < 3
         @spawnEntity 'EntityPerson', Math.random()*150, @screen.y + Math.random()*200, {}
+        @sortEntitiesDeferred()
 
       if Math.floor(Math.random() * 100) < 1
         @spawnEntity 'EntityVehicle', -17, @screen.y + Math.random()*200, {}
+        @sortEntitiesDeferred()
 
       if Math.floor(Math.random() * 100) < 0.33
         @spawnEntity 'EntityBus', -17, @screen.y + Math.random()*200, {}
+        @sortEntitiesDeferred()
 
       if Math.floor(Math.random() * 100) < 0.15
         @spawnEntity 'EntityFiretruck', -17, @screen.y + Math.random()*200, {}
+        @sortEntitiesDeferred()
+      
+      @shx = -1 + 2*Math.random() * @shakex
+      @shy = -1 + 2*Math.random() * @shakey
+
+      @screen.x += @shx
+      @screen.y += @shy
+
+      @shakex *= 0.9
+      @shakey *= 0.9
 
       @parent()
+
 
     draw: ->
       # Draw all entities and backgroundMaps
       @parent()
+
+      @screen.x -= @shx
+      @screen.y -= @shy
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC
   ig.main '#canvas', MyGame, 60, 150, 200, 3

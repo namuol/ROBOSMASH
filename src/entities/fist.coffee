@@ -6,7 +6,7 @@ ig.module(
   'game.entities.decal'
 ).defines ->
 
-  STICKY_DURATION = 30
+  STICKY_DURATION = 80
   MAX_SPD = 32
   RADIUS = 16
 
@@ -48,8 +48,14 @@ ig.module(
     update: ->
       @prevx = @posx
       @prevy = @posy
+      punched = false
 
-      if @released < 0 and ig.input.pressed @button
+      for p in @punch
+        if ig.input.pressed p
+          punched = true
+          break
+
+      if @released < 0 and punched
         @stickX = @crosshair.pos.x - 8
         @stickY = @crosshair.pos.y - 8
         @released = 0
@@ -57,12 +63,11 @@ ig.module(
         @decald = false
 
       if not @punching
-        @posx = @startx + ig.game.screen.x
-        @posy = @starty + ig.game.screen.y
-        @stickY = @posy
+        @velx = ((@startx + @head.pos.x) - @posx) * 0.15
+        @vely = ((@starty + @head.pos.y) - @posy) * 0.15
+        @released = -1
       else
         if ++@released >= STICKY_DURATION
-          @released = -1
           @punching = false
         @velx += ((@stickX - @posx) - @velx) * 0.5
         @vely += ((@stickY - @posy) - @vely) * 0.5
@@ -70,16 +75,20 @@ ig.module(
       @posx += @velx
       @posy += @vely
 
-      if @posy > @stickY
+      if @punching and @posy > @stickY
         @pos.x = @stickX
         @pos.y = @stickY
         if not @decald
+          @head.plant.x = @pos.x - @startx
+          @head.plant.y = @pos.y - @starty
+
           ig.game.spawnEntity 'EntityDecal', @pos.x-8, @pos.y,
             anim: 'impact0'
             flipx: Math.random() < 0.5
             flipy: Math.random() < 0.5
           ig.game.sortEntitiesDeferred()
           @decald = true
+          ig.game.shake 2, 10
       else
         @pos.x = @posx
         @pos.y = @posy

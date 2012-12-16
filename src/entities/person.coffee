@@ -3,7 +3,7 @@ ig.module(
 ).requires(
   'impact.entity'
 ).defines ->
-  ROW_COUNT = 1
+  ROW_COUNT = 6
   EPSILON = 1
 
   window.EntityPerson = ig.Entity.extend
