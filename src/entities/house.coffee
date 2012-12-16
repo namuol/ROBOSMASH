@@ -6,6 +6,7 @@ ig.module(
 ).defines ->
   ROW_COUNT = 3
   EPSILON = 1
+  SCORE = 300
 
   window.EntityHouse = ig.Entity.extend
     gravityFactor: 0
@@ -20,6 +21,7 @@ ig.module(
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    score: SCORE
     init: (x,y, settings) ->
       @parent x,y, settings
 
@@ -75,5 +77,6 @@ ig.module(
         anim: @currentAnim
 
       @currentAnim = @anims.busted
+      ig.game.scored @score
 
       ig.game.sortEntitiesDeferred()

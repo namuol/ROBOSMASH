@@ -113,6 +113,10 @@ ig.module(
             anim: 'impact0'
             flipx: Math.random() < 0.5
             flipy: Math.random() < 0.5
+
+          ig.game.spawnEntity 'EntityImpact', @pos.x, @pos.y,
+            fist: @
+
           ig.game.sortEntitiesDeferred()
           @decald = true
           ig.game.shake 0, 4

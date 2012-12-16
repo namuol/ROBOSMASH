@@ -32,6 +32,10 @@ ig.module(
 
   window.choose = (arr) ->
     arr[Math.floor(Math.random() * arr.length)]
+  
+  MAX_LIVES = 5
+  START_LIVES = 3
+  NEW_LIFE_COUNT = 150
 
   MyGame = ig.Game.extend
     # Sounds
@@ -42,12 +46,21 @@ ig.module(
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    ui: new ig.AnimationSheet 'media/gfx.png', 32,32
     gravity: 900
+    score: 0
+    new_life_counter: 0
+    lives: START_LIVES
 
     currentLevelType: 'suburban'
     font: new ig.Font('media/04b03.font.png')
     gfx: new ig.Font('media/gfx.png')
     clearColor: '#d6eca3'
+    scored: (score) ->
+      if ++@new_life_counter >= NEW_LIFE_COUNT
+        @lives = Math.min MAX_LIVES, @lives + 1
+        @new_life_counter = 0
+      @score += score
 
     pasteLevel: (lvl, y) ->
       # Delete first half of rows:
@@ -124,7 +137,8 @@ ig.module(
       #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
       dy = (@head.pos.y - @screen.y) * 0.15
       
-      if true or dy > 0
+      if dy > 0
+        @score += dy
         @screen.y += dy
       
       ###
@@ -178,6 +192,14 @@ ig.module(
 
       @screen.x -= @shx
       @screen.y -= @shy
+
+      @font.draw Math.round(@score), ig.system.width-1, ig.system.height-8, ig.Font.ALIGN.RIGHT
+      
+      i=0
+      while i < @lives
+        @ui.image.drawTile ig.system.width - 12*i - 16, ig.system.height - 24, 8, 16
+        ++i
+
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC
   ig.main '#canvas', MyGame, 60, 150, 200, 3

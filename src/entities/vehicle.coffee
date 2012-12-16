@@ -22,6 +22,7 @@ ig.module(
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    score: 150
     init: (x,y, settings) ->
       @parent x,y, settings
 
@@ -61,6 +62,8 @@ ig.module(
       snd.volume = 0.6
       snd.play()
       @kill()
+      ig.game.scored @score
+
       i = 0
 
       ig.game.spawnEntity 'EntityGibs', @pos.x, @pos.y,

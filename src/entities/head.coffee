@@ -18,6 +18,7 @@ ig.module(
     stall: 0
     hit: (stall) ->
       @stall = stall
+      --ig.game.lives
 
     init: (x,y, settings) ->
       @addAnim 'head', 5, [1], true
