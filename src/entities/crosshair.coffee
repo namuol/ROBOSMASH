@@ -15,3 +15,9 @@ ig.module(
     update: ->
       @pos.x = ig.input.mouse.x + ig.game.screen.x
       @pos.y = ig.input.mouse.y + ig.game.screen.y
+
+    draw: ->
+      sx = @pos.x - ig.game.screen.x
+      sy = @pos.y - ig.game.screen.y
+      @currentAnim.draw sx-32, sy
+      @currentAnim.draw sx+32, sy

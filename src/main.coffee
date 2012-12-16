@@ -5,6 +5,7 @@ ig.module(
   'impact.font'
   'game.levels.main'
   'game.levels.streets0'
+  'game.levels.streets1'
   'game.entities.crosshair'
   'game.entities.fist'
   'game.entities.head'
@@ -13,7 +14,16 @@ ig.module(
   'game.entities.bus'
   'game.entities.firetruck'
 ).defines ->
+  LEVEL_SEGMENTS =
+    suburban: [
+      LevelStreets0
+      LevelStreets1
+    ]
+  choose = (arr) ->
+    arr[Math.floor(Math.random() * arr.length)]
+
   MyGame = ig.Game.extend
+    currentLevelType: 'suburban'
     font: new ig.Font('media/04b03.font.png')
     gfx: new ig.Font('media/gfx.png')
     clearColor: '#d6eca3'
@@ -22,22 +32,23 @@ ig.module(
       # Delete first half of rows:
       i=0
       while i < 15
-        @backgroundMaps[0].data.shift()
+        @backgroundMaps[1].data.shift()
         ++i
 
       # Push new level rows:
       tiles = lvl.layer[0].data
       # TODO: Handle entities
-      # entities = lvl.entities
+      entities = lvl.entities
+      for e in entities
+        @spawnEntity e.type, e.x, e.y+240, e.settings
      
       y = 0
       while y < 15
-        @backgroundMaps[0].data.push tiles[y]
+        @backgroundMaps[1].data.push tiles[y]
         ++y
 
     init: ->
       @loadLevel LevelMain
-      @pasteLevel LevelStreets0, 0
 
       # Initialize your game here; bind keys etc.
       ig.input.bind ig.KEY.Z, 'punchL'
@@ -80,7 +91,7 @@ ig.module(
       @time = Date.now()
 
       #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
-      @screen.y += (@head.plant.y - @screen.y) * 0.05
+      @screen.y += (@head.pos.y - @screen.y) * 0.05
 
       if Math.floor(Math.random() * 100) < 3
         @spawnEntity 'EntityPerson', Math.random()*150, @screen.y + Math.random()*200, {}
@@ -98,10 +109,10 @@ ig.module(
         @spawnEntity 'EntityFiretruck', -17, @screen.y + Math.random()*200, {}
         @sortEntitiesDeferred()
       
-      @shx = -1 + 2*Math.random() * @shakex
-      @shy = -1 + 2*Math.random() * @shakey
+      @shx = 2*Math.random() * @shakex
+      @shy = 2*Math.random() * @shakey
 
-      #@screen.x += @shx
+      @screen.x += @shx
       @screen.y += @shy
 
       if @screen.y > 240
@@ -115,7 +126,8 @@ ig.module(
         for e in @entities
           e.pos.y -= 240
 
-        @pasteLevel LevelStreets0
+        @pasteLevel choose LEVEL_SEGMENTS[@currentLevelType]
+
 
       @shakex *= 0.9
       @shakey *= 0.9
@@ -126,7 +138,7 @@ ig.module(
       # Draw all entities and backgroundMaps
       @parent()
 
-      #@screen.x -= @shx
+      @screen.x -= @shx
       @screen.y -= @shy
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC

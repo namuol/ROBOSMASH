@@ -9,10 +9,16 @@ ig.module(
 
   window.EntityHead = ig.Entity.extend
     size:
-      x: 32
-      y: 16
+      x: 64
+      y: 32
     zIndex: 20
+    head: true
+    type: ig.Entity.TYPE.A
+    checkAgainst: ig.Entity.TYPE.NONE
     animSheet: new ig.AnimationSheet 'media/gfx.png', 64, 32
+    hit: (stall) ->
+      @stall = stall
+
     init: (x,y, settings) ->
       @addAnim 'head', 5, [1], true
       @addAnim 'jaw', 5, [3], true
@@ -22,6 +28,10 @@ ig.module(
 
       @parent x,y, settings
     update: ->
+      if @stall > 0
+        --@stall
+        return
+
       @vel.x += ((@plant.x - @pos.x) - @vel.x) * 0.25
       @vel.y += ((@plant.y - @pos.y) - @vel.y) * 0.25
       spd = Math.sqrt(@vel.x*@vel.x + @vel.y*@vel.y)
@@ -39,6 +49,16 @@ ig.module(
         console.log 'THATS IT'
 
     draw: ->
+      if @stall > 0
+        if @stall % 10 < 5
+          @currentAnim.alpha = 0.5
+          @anims.jaw.alpha = 0.5
+        else
+          @currentAnim.alpha = 1
+          @anims.jaw.alpha = 1
+      else
+        @anims.jaw.alpha = 1
+        @currentAnim.alpha = 1
       px = @pos.x - ig.game.screen.x
       py = @pos.y + 2*Math.sin(ig.game.time/150) - ig.game.screen.y
       @anims.jaw.draw px, 4 + py + 3*Math.sin(ig.game.time/250)

@@ -55,9 +55,13 @@ ig.module(
           punched = true
           break
 
-      if @released < 0 and punched
-        @stickX = @crosshair.pos.x - 8
-        @stickY = @crosshair.pos.y - 8
+      if @released < 0 and punched and (!@head.stall > 0)
+        if @startx < 0
+          @stickX = @crosshair.pos.x - 8 - 32
+        else
+          @stickX = @crosshair.pos.x - 8 + 32
+
+        @stickY = @crosshair.pos.y + 4
         @released = 0
         @punching = true
         @decald = false
