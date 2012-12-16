@@ -6,7 +6,9 @@ ig.module(
   'game.entities.decal'
 ).defines ->
 
-  STICKY_DURATION = 80
+  HELD_DURATION = 10
+  STOMP_DELAY = 10
+  STICKY_DURATION = 10
   MAX_SPD = 32
   RADIUS = 16
 
@@ -19,6 +21,7 @@ ig.module(
     vely: 0
     animSheet: new ig.AnimationSheet 'media/gfx.png', 16, 16
     decals: new ig.AnimationSheet 'media/large_decals.png', 32, 32
+    stomp: new ig.Sound 'media/sounds/stomp.*'
     zIndex: 20
     released: -1
     posx: 0
@@ -48,14 +51,24 @@ ig.module(
     update: ->
       @prevx = @pos.x
       @prevy = @pos.y
-      punched = false
 
+      held = false
       for p in @punch
         if ig.input.pressed p
-          punched = true
-          break
+          #@stompDelay = STOMP_DELAY
+          hit = true
+        else if ig.input.state p
+          held = true
 
-      if @released < 0 and punched and (!@head.stall > 0)
+      if held
+        ++@held
+      else
+        @held = 0
+
+      #if @stompDelay >= 0
+      #  --@stompDelay
+
+      if !@punching and !@other.punching and (@released < 0) and (@held == HELD_DURATION) and (!@head.stall > 0)
         if @startx < 0
           @stickX = @crosshair.pos.x - 8 - 32
         else
@@ -92,9 +105,14 @@ ig.module(
             flipy: Math.random() < 0.5
           ig.game.sortEntitiesDeferred()
           @decald = true
-          ig.game.shake 2, 10
+          ig.game.shake 2, 5
+          @stomp.volume = 0.75
+          @stomp.play()
 
       if @punching
         @spawnImpacts()
+      else if @held > 0 and @held <= HELD_DURATION
+        @pos.y -= 5
+
 
       @parent arguments...

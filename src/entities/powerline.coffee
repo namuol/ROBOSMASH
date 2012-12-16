@@ -14,6 +14,7 @@ ig.module(
     zIndex: 20
     type: ig.Entity.TYPE.B
     checkAgainst: ig.Entity.TYPE.A
+    zapped: new ig.Sound 'media/sounds/zapped.*'
     animSheet: new ig.AnimationSheet 'media/gfx.png', 64, 32
     init: (x,y, settings) ->
       @parent x,y, settings
@@ -31,3 +32,5 @@ ig.module(
         other.pos.y -= other.pos.y - @pos.y
         ig.game.head.hit 60
         ig.game.shake 60, 0
+        @zapped.volume = 0.75
+        @zapped.play()

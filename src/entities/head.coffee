@@ -13,8 +13,6 @@ ig.module(
       y: 32
     zIndex: 20
     head: true
-    type: ig.Entity.TYPE.A
-    checkAgainst: ig.Entity.TYPE.NONE
     animSheet: new ig.AnimationSheet 'media/gfx.png', 64, 32
     hit: (stall) ->
       @stall = stall

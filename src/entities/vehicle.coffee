@@ -16,6 +16,10 @@ ig.module(
     mass: 200
     checkAgainst: ig.Entity.TYPE.A
     animSheet: new ig.AnimationSheet 'media/vehicles.png', 16,16
+    splode0: new ig.Sound 'media/sounds/splode0.*'
+    splode1: new ig.Sound 'media/sounds/splode1.*'
+    splode2: new ig.Sound 'media/sounds/splode2.*'
+    splode3: new ig.Sound 'media/sounds/splode3.*'
     init: (x,y, settings) ->
       @parent x,y, settings
 
@@ -44,4 +48,12 @@ ig.module(
         @kill()
 
     check: (other) ->
+      snd = choose [
+        @splode0
+        @splode1
+        @splode2
+        @splode3
+      ]
+      snd.volume = 0.6
+      snd.play()
       @kill()

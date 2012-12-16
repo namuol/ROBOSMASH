@@ -1,0 +1,73 @@
+doctype 5
+html ->
+  head ->
+    meta charset:"utf-8"
+    title 'BOTWALK'
+    text '''
+    <meta property="og:title" content="BOTWALK" />
+    <meta property="og:type" content="website" />
+    <!--meta property="og:url" content="http://www.flog-game.com" /-->
+    <meta property="og:image" content="scrot.png" />
+    <meta property="og:site_name" content="BOTWALK" />
+    <meta property="og:description" content="Mouse-only action game." />
+    '''
+
+    link rel:'stylesheet', href:'style.css'
+    link rel:'shortcut icon', href:'media/favicon.png'
+    script type:'text/javascript', src:'game.min.js'
+    text '''
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37078532-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    '''
+
+body ->
+  text '''
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=419353708135056";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+  '''
+
+  div id:'main', ->
+    p class:'beer', ->
+      a target:'_blank', href:'//namuol.github.com/beer.html', 'Keep this Ad-Free/Buy me a Beer'
+
+    canvas id:'canvas'
+    p ->
+      text 'Use your mouse to aim.'
+      br ''
+      text '<b>[Z]</b> and <b>[C]</b> or <b>[LMB]</b> and <b>[RMB]</b> to control left/right stomping, respectively.'
+      br ''
+      br ''
+      text 'Created by <a target="_blank" href="//namuol.github.com">Louis Acresti</a> for <a target="_blank" href="http://www.ludumdare.com/compo/ludum-dare-25/">Ludum Dare 25</a>.'
+      br ''
+    div class:'fb', ->
+      text '''
+        <div class="fb-like" data-send="true" data-layout="button_count" data-width="450" data-show-faces="true" data-colorscheme="dark"></div>
+      '''
+    div class:'tweet', ->
+      text '''
+        <a href="https://twitter.com/share" class="twitter-share-button" data-via="louroboros">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        '''
+      br ''
+      text '''
+        <a href="https://twitter.com/louroboros" class="twitter-follow-button" data-show-count="false">Follow @louroboros</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      '''
+

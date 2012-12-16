@@ -14,15 +14,30 @@ ig.module(
   'game.entities.bus'
   'game.entities.firetruck'
 ).defines ->
+  ig.Sound.use = [
+    ig.Sound.FORMAT.OGG
+    ig.Sound.FORMAT.MP3
+    ig.Sound.FORMAT.M4A
+  ]
+
   LEVEL_SEGMENTS =
     suburban: [
       LevelStreets0
       LevelStreets1
     ]
-  choose = (arr) ->
+
+  window.choose = (arr) ->
     arr[Math.floor(Math.random() * arr.length)]
 
   MyGame = ig.Game.extend
+    # Sounds
+    zapped: new ig.Sound 'media/sounds/zapped.*'
+    stomp: new ig.Sound 'media/sounds/stomp.*'
+    splode0: new ig.Sound 'media/sounds/splode0.*'
+    splode1: new ig.Sound 'media/sounds/splode1.*'
+    splode2: new ig.Sound 'media/sounds/splode2.*'
+    splode3: new ig.Sound 'media/sounds/splode3.*'
+
     currentLevelType: 'suburban'
     font: new ig.Font('media/04b03.font.png')
     gfx: new ig.Font('media/gfx.png')
@@ -91,7 +106,7 @@ ig.module(
       @time = Date.now()
 
       #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
-      @screen.y += (@head.pos.y - @screen.y) * 0.05
+      @screen.y += (@head.pos.y - @screen.y) * 0.15
 
       if Math.floor(Math.random() * 100) < 3
         @spawnEntity 'EntityPerson', Math.random()*150, @screen.y + Math.random()*200, {}
