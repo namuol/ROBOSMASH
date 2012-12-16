@@ -1,6 +1,7 @@
 ig.module(
   'game.entities.vehicle'
 ).requires(
+  'game.entities.gibs'
   'impact.entity'
 ).defines ->
   ROW_COUNT = 4
@@ -9,13 +10,14 @@ ig.module(
   SPD = 60
 
   window.EntityVehicle = ig.Entity.extend
+    gravityFactor: 0
     size:
       x: 16
       y: 16
     type: ig.Entity.TYPE.B
     mass: 200
     checkAgainst: ig.Entity.TYPE.A
-    animSheet: new ig.AnimationSheet 'media/vehicles.png', 16,16
+    animSheet: new ig.AnimationSheet 'media/vehicles.png', 16,13
     splode0: new ig.Sound 'media/sounds/splode0.*'
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
@@ -44,7 +46,7 @@ ig.module(
     update: ->
       @parent arguments...
 
-      if @pos.x > 150 or @pos.x < -16
+      if @pos.x > ig.system.width or @pos.x < -@size.x
         @kill()
 
     check: (other) ->
@@ -57,3 +59,15 @@ ig.module(
       snd.volume = 0.6
       snd.play()
       @kill()
+      i = 0
+
+      ig.game.spawnEntity 'EntityGibs', @pos.x, @pos.y,
+        ox: 10
+        oy: 10
+        vx: 200
+        vy: 300
+        ttl: 250
+        count: Math.floor(5 + Math.random()*5)
+        anim: @currentAnim
+
+      ig.game.sortEntitiesDeferred()

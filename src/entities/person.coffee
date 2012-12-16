@@ -7,6 +7,7 @@ ig.module(
   EPSILON = 1
 
   window.EntityPerson = ig.Entity.extend
+    gravityFactor: 0
     size:
       x: 7
       y: 8

@@ -6,6 +6,7 @@ ig.module(
   'game.levels.main'
   'game.levels.streets0'
   'game.levels.streets1'
+  'game.levels.streets2'
   'game.entities.crosshair'
   'game.entities.fist'
   'game.entities.head'
@@ -24,6 +25,7 @@ ig.module(
     suburban: [
       LevelStreets0
       LevelStreets1
+      LevelStreets2
     ]
 
   window.choose = (arr) ->
@@ -32,11 +34,13 @@ ig.module(
   MyGame = ig.Game.extend
     # Sounds
     zapped: new ig.Sound 'media/sounds/zapped.*'
+    lift: new ig.Sound 'media/sounds/lift.*'
     stomp: new ig.Sound 'media/sounds/stomp.*'
     splode0: new ig.Sound 'media/sounds/splode0.*'
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    gravity: 900
 
     currentLevelType: 'suburban'
     font: new ig.Font('media/04b03.font.png')
@@ -73,16 +77,21 @@ ig.module(
       ig.input.bind ig.KEY.MOUSE2, 'graspR'
 
       ig.input.initMouse()
-      ch = @spawnEntity 'EntityCrosshair', 0,0, {}
       @head = @spawnEntity 'EntityHead', 150/2 - 32,0, {}
-      @f1 = @spawnEntity 'EntityFist', -5,40,
+      ch1 = @spawnEntity 'EntityCrosshair', 0,0,
+        ox: -10
+        oy: 0
+      ch2 = @spawnEntity 'EntityCrosshair', 0,0,
+        ox: 10
+        oy: 0
+      @f1 = @spawnEntity 'EntityFist', 5,40,
         head: @head
         punch: ['graspL', 'punchL']
-        crosshair: ch
-      @f2 = @spawnEntity 'EntityFist', 50,40,
+        crosshair: ch1
+      @f2 = @spawnEntity 'EntityFist', 42,40,
         head: @head
         punch: ['graspR', 'punchR']
-        crosshair: ch
+        crosshair: ch2
       @f1.other = @f2
       @f2.other = @f1
       @head.feet = []
@@ -139,6 +148,8 @@ ig.module(
         @f2.stickY -= 240
 
         for e in @entities
+          if typeof e.bottom == 'number'
+            e.bottom -= 240
           e.pos.y -= 240
 
         @pasteLevel choose LEVEL_SEGMENTS[@currentLevelType]

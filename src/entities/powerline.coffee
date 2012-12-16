@@ -5,11 +5,12 @@ ig.module(
 ).defines ->
 
   window.EntityPowerline = ig.Entity.extend
+    gravityFactor: 0
     size:
-      x: 48
+      x: 32
       y: 8
     offset:
-      x: 8
+      x: 16
       y: 12
     zIndex: 20
     type: ig.Entity.TYPE.B

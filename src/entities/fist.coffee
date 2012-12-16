@@ -8,7 +8,7 @@ ig.module(
 
   HELD_DURATION = 7
   STOMP_DELAY = 10
-  STICKY_DURATION = 10
+  STICKY_DURATION = 20
   MAX_SPD = 32
   RADIUS = 16
 
@@ -19,11 +19,14 @@ ig.module(
       y: 16
     velx: 0
     vely: 0
+    gravityFactor: 0
     animSheet: new ig.AnimationSheet 'media/gfx.png', 16, 16
     decals: new ig.AnimationSheet 'media/large_decals.png', 32, 32
+    lift: new ig.Sound 'media/sounds/lift.*'
     stomp: new ig.Sound 'media/sounds/stomp.*'
     zIndex: 20
     released: -1
+    stomped: true
     posx: 0
     posy: 0
     init: (x,y, settings) ->
@@ -60,24 +63,24 @@ ig.module(
         else if ig.input.state p
           held = true
 
-      if held
+      if held and @head.stall <= 0
         ++@held
+        if @held == 1
+          @lift.volume = 0.5
+          @lift.play()
       else
         @held = 0
 
       #if @stompDelay >= 0
       #  --@stompDelay
 
-      if (!@punching) and (!@other.punching) and (@released < 0) and (@held == HELD_DURATION) and (!@head.stall > 0)
-        if @startx < 0
-          @stickX = @crosshair.pos.x - 8 - 32
-        else
-          @stickX = @crosshair.pos.x - 8 + 32
-
+      if (!@punching) and @other.stomped and (@released < 0) and (@held == HELD_DURATION) and (!@head.stall > 0)
+        @stickX = @crosshair.pos.x
         @stickY = @crosshair.pos.y + 4
         @released = 0
         @punching = true
         @decald = false
+        @stomped = false
 
       if not @punching
         @velx = ((@startx + @head.pos.x) - @pos.x) * 0.15
@@ -92,11 +95,14 @@ ig.module(
       if not @head.stall > 0
         @pos.x += @velx
         @pos.y += @vely
+      else
+        @stomped = true # HACK
 
       if @punching and @pos.y > @stickY
         @pos.x = @stickX
         @pos.y = @stickY
         if not @decald
+          @stomped = true
           @head.plant.x = @pos.x - @startx
           @head.plant.y = @pos.y - @starty
 

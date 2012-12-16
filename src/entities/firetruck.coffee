@@ -11,7 +11,7 @@ ig.module(
       x: 32
       y: 16
     mass: 200
-    animSheet: new ig.AnimationSheet 'media/vehicles.png', 32, 16
+    animSheet: new ig.AnimationSheet 'media/vehicles.png', 32, 13
     init: (x,y, settings) ->
       @addAnim 'go', 0.05, [6,7]
       @currentAnim = @anims.go

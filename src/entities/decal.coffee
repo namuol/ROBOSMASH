@@ -23,5 +23,3 @@ ig.module(
     update: ->
       if @pos.y + @size.y < ig.game.screen.y
         @kill()
-
-      @parent arguments...

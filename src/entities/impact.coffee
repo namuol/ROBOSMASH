@@ -5,6 +5,7 @@ ig.module(
 ).defines ->
   window.EntityImpact = ig.Entity.extend
     _wmIgnore: true
+    gravityFactor: 0
     type: ig.Entity.TYPE.A
     checkAgainst: ig.Entity.TYPE.NONE
     collides: ig.Entity.COLLIDES.NONE

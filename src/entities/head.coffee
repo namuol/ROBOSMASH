@@ -11,9 +11,11 @@ ig.module(
     size:
       x: 64
       y: 32
-    zIndex: 20
+    zIndex: 26
+    gravityFactor: 0
     head: true
     animSheet: new ig.AnimationSheet 'media/gfx.png', 64, 32
+    stall: 0
     hit: (stall) ->
       @stall = stall
 
@@ -42,9 +44,6 @@ ig.module(
       #@parent arguments...
       @pos.x += @vel.x
       @pos.y += @vel.y
-
-      if @plant.y > 320
-        console.log 'THATS IT'
 
     draw: ->
       if @stall > 0
