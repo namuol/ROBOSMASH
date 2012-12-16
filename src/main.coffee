@@ -3,6 +3,8 @@ ig.module(
 ).requires(
   'impact.game'
   'impact.font'
+  'game.levels.main'
+  'game.levels.streets0'
   'game.entities.crosshair'
   'game.entities.fist'
   'game.entities.head'
@@ -15,7 +17,28 @@ ig.module(
     font: new ig.Font('media/04b03.font.png')
     gfx: new ig.Font('media/gfx.png')
     clearColor: '#d6eca3'
+
+    pasteLevel: (lvl, y) ->
+      # Delete first half of rows:
+      i=0
+      while i < 15
+        @backgroundMaps[0].data.shift()
+        ++i
+
+      # Push new level rows:
+      tiles = lvl.layer[0].data
+      # TODO: Handle entities
+      # entities = lvl.entities
+     
+      y = 0
+      while y < 15
+        @backgroundMaps[0].data.push tiles[y]
+        ++y
+
     init: ->
+      @loadLevel LevelMain
+      @pasteLevel LevelStreets0, 0
+
       # Initialize your game here; bind keys etc.
       ig.input.bind ig.KEY.Z, 'punchL'
       ig.input.bind ig.KEY.C, 'punchR'
@@ -78,20 +101,28 @@ ig.module(
       @shx = -1 + 2*Math.random() * @shakex
       @shy = -1 + 2*Math.random() * @shakey
 
-      @screen.x += @shx
+      #@screen.x += @shx
       @screen.y += @shy
+
+      if @screen.y > 320
+        @screen.y -= 320
+        for e in @entities
+          if e.posy
+            e.posy -= 320
+          e.pos.y -= 320
+
+        @pasteLevel LevelStreets0
 
       @shakex *= 0.9
       @shakey *= 0.9
 
       @parent()
 
-
     draw: ->
       # Draw all entities and backgroundMaps
       @parent()
 
-      @screen.x -= @shx
+      #@screen.x -= @shx
       @screen.y -= @shy
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC

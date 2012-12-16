@@ -82,7 +82,7 @@ ig.module(
           @head.plant.x = @pos.x - @startx
           @head.plant.y = @pos.y - @starty
 
-          ig.game.spawnEntity 'EntityDecal', @pos.x-8, @pos.y,
+          ig.game.spawnEntity 'EntityDecal', @pos.x-8, @pos.y-4,
             anim: 'impact0'
             flipx: Math.random() < 0.5
             flipy: Math.random() < 0.5
