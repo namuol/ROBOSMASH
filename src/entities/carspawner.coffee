@@ -31,7 +31,31 @@ ig.module(
     size:
       x: 150
       y: 32
-    nextCar: MIN_DELAY + DELAY
+    nextCar: 0
+    init: ->
+      @parent arguments...
+      return if window.wm
+
+      type = choose TYPES
+      left = Math.random() < 0.5
+
+      py = @pos.y
+      if left
+        px = 0.25*ig.system.width - 1
+      else
+        px = 0.75*ig.system.width + 1
+
+      switch choose TYPES
+        when 'car'
+          ig.game.spawnEntity 'EntityVehicle', px, py, {}
+        when 'truck'
+          ig.game.spawnEntity 'EntityVehicle', px, py, {}
+        when 'bus'
+          ig.game.spawnEntity 'EntityBus', px, py, {}
+        when 'firetruck'
+          ig.game.spawnEntity 'EntityFiretruck', px, py, {}
+      ig.game.sortEntitiesDeferred()
+
     update: ->
       return if @pos.y > ig.game.screen.y + ig.system.height
 

@@ -40,7 +40,7 @@ ig.module(
       @vel.y = 0
       @vel.x = MIN_SPD + (Math.random() * SPD)
 
-      if @pos.x > 0
+      if @pos.x > ig.system.width / 2
         @currentAnim.flip.x = true
         @vel.x *= -1
 
