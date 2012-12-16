@@ -49,19 +49,19 @@ ig.module(
       ig.input.initMouse()
       ch = @spawnEntity 'EntityCrosshair', 0,0, {}
       @head = @spawnEntity 'EntityHead', 150/2 - 32,0, {}
-      f1 = @spawnEntity 'EntityFist', -5,40,
+      @f1 = @spawnEntity 'EntityFist', -5,40,
         head: @head
         punch: ['graspL', 'punchL']
         crosshair: ch
-      f2 = @spawnEntity 'EntityFist', 50,40,
+      @f2 = @spawnEntity 'EntityFist', 50,40,
         head: @head
         punch: ['graspR', 'punchR']
         crosshair: ch
-      f1.other = f2
-      f2.other = f1
+      @f1.other = @f2
+      @f2.other = @f1
       @head.feet = []
-      @head.feet[0] = f1
-      @head.feet[1] = f2
+      @head.feet[0] = @f1
+      @head.feet[1] = @f2
     time: Date.now()
     screen:
       x:0
@@ -104,12 +104,16 @@ ig.module(
       #@screen.x += @shx
       @screen.y += @shy
 
-      if @screen.y > 320
-        @screen.y -= 320
+      if @screen.y > 240
+        @screen.y -= 240
+        @head.plant.y -= 240
+        @f1.prevy -= 240
+        @f1.stickY -= 240
+        @f2.prevy -= 240
+        @f2.stickY -= 240
+
         for e in @entities
-          if e.posy
-            e.posy -= 320
-          e.pos.y -= 320
+          e.pos.y -= 240
 
         @pasteLevel LevelStreets0
 

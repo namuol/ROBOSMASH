@@ -35,6 +35,9 @@ ig.module(
       @pos.x += @vel.x
       @pos.y += @vel.y
 
+      if @plant.y > 320
+        console.log 'THATS IT'
+
     draw: ->
       px = @pos.x - ig.game.screen.x
       py = @pos.y + 2*Math.sin(ig.game.time/150) - ig.game.screen.y
