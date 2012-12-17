@@ -18,6 +18,7 @@ ig.module(
   'game.entities.bullet'
   'game.entities.hurry'
   'game.entities.uibar'
+  'game.entities.peoplespawner'
 ).defines ->
   ig.Sound.use = [
     ig.Sound.FORMAT.OGG
@@ -35,21 +36,48 @@ ig.module(
 
   LEVEL_PROGRESS = [
       type:'suburban'
-      time: 10
+      time: 30
       dist: 1000
-      tank_prob:0.01
-      max_tanks: 1
+      tank_prob:0.0
+      max_tanks: 0
     ,
       type:'suburban'
       time: 30
-      dist: 5000
+      dist: 1500
+      tank_prob:0.0
+      max_tanks: 0
+    ,
+      type:'suburban'
+      time: 30
+      dist: 2250
+      tank_prob:0.0
+      max_tanks: 0
+    ,
+      type:'urban'
+      time: 30
+      dist: 3250
       tank_prob:0.01
       max_tanks: 1
     ,
+      type:'urban'
+      time: 30
+      dist: 4000
+      tank_prob:0.015
+      max_tanks: 1
+    ,
+      type:'urban'
+      time: 30
+      dist: 5000
+      tank_prob:0.02
+      max_tanks: 1
   ]
 
   LEVEL_SEGMENTS =
     suburban: [
+      LevelStreets0
+      LevelStreets1
+    ]
+    urban: [
       LevelStreets0
       LevelStreets1
       LevelStreets2
@@ -106,7 +134,7 @@ ig.module(
       @score += score
 
     pasteLevel: (lvl, y) ->
-      console.log 'PASTED'
+      #console.log 'PASTED'
       # Delete first half of rows:
       i=0
       while i < 15
@@ -145,7 +173,7 @@ ig.module(
       i=0
       for row in @backgroundMaps[1].data
         @backgroundMaps[1].data[i] = (0 for n in [0..row.length])
-        console.log @backgroundMaps[1].data[i]
+        #console.log @backgroundMaps[1].data[i]
         ++i
 
 
@@ -223,9 +251,9 @@ ig.module(
     update: ->
       # Update all entities and backgroundMaps
       ++@tock
-      if @tock % 30 == 0
-        console.log @entities.length
-        #console.log @getEntitiesByType('EntityVehicle').length
+      #if @tock % 30 == 0
+      #  #console.log @entities.length
+      #  #console.log @getEntitiesByType('EntityVehicle').length
       prev = @time
       if !prev
         prev = Date.now()

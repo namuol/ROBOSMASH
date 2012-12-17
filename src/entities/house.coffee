@@ -77,6 +77,10 @@ ig.module(
         ttl: 50
         count: Math.floor(5 + Math.random()*5)
         anim: @currentAnim
+      ig.game.spawnEntity 'EntityPeoplespawner', @pos.x, @pos.y,
+        size:
+          x:@size.x
+          y:@size.y
 
       @currentAnim = @anims.busted
       ig.game.scored @score
