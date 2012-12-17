@@ -55,6 +55,8 @@ ig.module(
         ++i
 
     update: ->
+      return if ig.game.over
+
       @prevx = @pos.x
       @prevy = @pos.y
 

@@ -19,6 +19,8 @@ ig.module(
   'game.entities.hurry'
   'game.entities.clear'
   'game.entities.uibar'
+  'game.entities.ui_button'
+  'game.entities.gameover'
   'game.entities.splat'
   'game.entities.peoplespawner'
 ).defines ->
@@ -129,9 +131,14 @@ ig.module(
     progress: 0
     over: false
     gameOver: (reason) ->
+      @head.kill()
+      @f1.kill()
+      @f2.kill()
+
       @over = true
-      if confirm 'Game Over: ' + reason + '\nYour score was '+Math.round(@score)+'\nTry Again?'
-        @init()
+      #alert 'Game Over: ' + reason + '\nYour score was '+Math.round(@score)+'\nTry Again?'
+      @spawnEntity 'EntityGameover', 0,0,
+        reason: reason
 
     scored: (score) ->
       if ++@new_life_counter >= NEW_LIFE_COUNT
@@ -191,6 +198,8 @@ ig.module(
 
       ig.input.bind ig.KEY.MOUSE1, 'graspL'
       ig.input.bind ig.KEY.MOUSE2, 'graspR'
+
+      ig.input.bind ig.KEY.MOUSE1, 'click'
 
       ig.input.initMouse()
       @timeMeter = new EntityUibar 2, ig.system.height-5,
@@ -283,7 +292,7 @@ ig.module(
           @progress = Math.min LEVEL_PROGRESS.length-1, @progress + 1
           @timeLeft = LEVEL_PROGRESS[@progress].time
           @distLeft = LEVEL_PROGRESS[@progress].dist
-          @score += @timeLeft * 1000
+          @score += @timeLeft * 100 * (@progress+1)
 
       @shx = 2*Math.random() * @shakex
       @shy = 2*Math.random() * @shakey
@@ -298,7 +307,7 @@ ig.module(
       @screen.x += @shx
       @screen.y += @shy
 
-      if @screen.y > 240
+      if @screen.y > 240 and !@over
         @screen.y -= 240
         @head.plant.y -= 240
         @f1.prevy -= 240
@@ -318,29 +327,32 @@ ig.module(
 
       @parent()
 
-      if @timeLeft < LEVEL_PROGRESS[@progress].time*0.2
-        if @getEntitiesByType('EntityHurry').length == 0
-          @spawnEntity 'EntityHurry', 0,0,{}
+      if !@over
+        if @timeLeft < LEVEL_PROGRESS[@progress].time*0.2
+          if @getEntitiesByType('EntityHurry').length == 0
+            @spawnEntity 'EntityHurry', 0,0,{}
 
-      if @timeLeft < 0 and !@over
-        @gameOver 'you didn\'t reach the checkpoint in time.'
-      else if @lives < 0
-        @gameOver 'you ran out of lives.'
+        if @timeLeft < 0 and !@over
+          @gameOver 'You ran out of time.'
+        else if @lives < 0
+          @gameOver 'You ran out of lives.'
 
 
     draw: ->
       # Draw all entities and backgroundMaps
       @parent()
-
+      
       @screen.x -= @shx
       @screen.y -= @shy
-      @timeMeter.max = LEVEL_PROGRESS[@progress].time
-      @timeMeter.val = @timeLeft
-      @timeMeter.draw()
+      
+      if !@over
+        @timeMeter.max = LEVEL_PROGRESS[@progress].time
+        @timeMeter.val = @timeLeft
+        @timeMeter.draw()
 
-      @distMeter.max = LEVEL_PROGRESS[@progress].dist
-      @distMeter.val = @distMeter.max - @distLeft
-      @distMeter.draw()
+        @distMeter.max = LEVEL_PROGRESS[@progress].dist
+        @distMeter.val = @distMeter.max - @distLeft
+        @distMeter.draw()
 
       oy = 8
       if @lives < MAX_LIVES
@@ -353,8 +365,6 @@ ig.module(
       while i < @lives
         @ui.image.drawTile ig.system.width - 12*i - 16, ig.system.height - 24 - oy, 8, 16
         ++i
-
-
  
   ig.System.drawMode = ig.System.DRAW.AUTHENTIC
   ig.main '#canvas', MyGame, 60, 150, 200, 3

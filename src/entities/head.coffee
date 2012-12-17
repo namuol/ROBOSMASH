@@ -34,6 +34,8 @@ ig.module(
 
       @parent x,y, settings
     update: ->
+      return if ig.game.over
+
       if @stall > 0
         --@stall
         return

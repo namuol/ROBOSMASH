@@ -16,7 +16,6 @@ ig.module(
       return if window.wm
       area = @size.x * @size.y
       i=0
-      console.log area
       while i < area * RATE
         if Math.random() < 0.5
           px = @pos.x + Math.random() * @size.x

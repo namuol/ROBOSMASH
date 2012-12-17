@@ -9,6 +9,7 @@ ig.module(
     active: false
     hover: false
     disabled: false
+    gravityFactor: 0
     mouseover: ->
     mouseout: ->
     pressed: ->
@@ -139,7 +140,6 @@ ig.module(
 
         if @hover and (not _hover_prev)
           @mouseover()
-          @click.volume = 0.25
         else if (not @hover) and _hover_prev
           @mouseout()
 
