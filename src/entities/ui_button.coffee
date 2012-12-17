@@ -135,7 +135,7 @@ ig.module(
         @hover = false
       
       if !@disabled
-        if @hover and ig.input.pressed 'click'
+        if @hover and ig.input.pressed 'graspL'
           @pressed()
 
         if @hover and (not _hover_prev)
@@ -143,7 +143,7 @@ ig.module(
         else if (not @hover) and _hover_prev
           @mouseout()
 
-        if @active and ig.input.released 'click'
+        if @active and ig.input.released 'graspL'
           @released()
 
       @parent arguments...

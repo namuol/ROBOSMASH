@@ -199,8 +199,6 @@ ig.module(
       ig.input.bind ig.KEY.MOUSE1, 'graspL'
       ig.input.bind ig.KEY.MOUSE2, 'graspR'
 
-      ig.input.bind ig.KEY.MOUSE1, 'click'
-
       ig.input.initMouse()
       @timeMeter = new EntityUibar 2, ig.system.height-5,
         size:
@@ -279,20 +277,21 @@ ig.module(
       @timeLeft -= (@time - prev)/1000
 
       #@screen.x += (@head.plant.x - ig.system.width/2 + 32 - @screen.x) * 0.05
-      dy = (@head.pos.y - @screen.y) * 0.15
-      
-      if dy > 0
-        @score += dy
-        @screen.y += dy
+      if !@over
+        dy = (@head.pos.y - @screen.y) * 0.15
+        
+        if dy > 0
+          @score += dy
+          @screen.y += dy
 
-        @distLeft -= dy
-        if @distLeft <= 0
-          @spawnEntity 'EntityClear', 0,0,{}
+          @distLeft -= dy
+          if @distLeft <= 0
+            @spawnEntity 'EntityClear', 0,0,{}
 
-          @progress = Math.min LEVEL_PROGRESS.length-1, @progress + 1
-          @timeLeft = LEVEL_PROGRESS[@progress].time
-          @distLeft = LEVEL_PROGRESS[@progress].dist
-          @score += @timeLeft * 100 * (@progress+1)
+            @progress = Math.min LEVEL_PROGRESS.length-1, @progress + 1
+            @timeLeft = LEVEL_PROGRESS[@progress].time
+            @distLeft = LEVEL_PROGRESS[@progress].dist
+            @score += @timeLeft * 100 * (@progress+1)
 
       @shx = 2*Math.random() * @shakex
       @shy = 2*Math.random() * @shakey
@@ -307,7 +306,7 @@ ig.module(
       @screen.x += @shx
       @screen.y += @shy
 
-      if @screen.y > 240 and !@over
+      if (@screen.y > 240) and !@over
         @screen.y -= 240
         @head.plant.y -= 240
         @f1.prevy -= 240
@@ -332,7 +331,7 @@ ig.module(
           if @getEntitiesByType('EntityHurry').length == 0
             @spawnEntity 'EntityHurry', 0,0,{}
 
-        if @timeLeft < 0 and !@over
+        if @timeLeft < 0
           @gameOver 'You ran out of time.'
         else if @lives < 0
           @gameOver 'You ran out of lives.'

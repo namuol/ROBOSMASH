@@ -51,7 +51,7 @@ body ->
     p ->
       text 'Use your mouse to aim.'
       br ''
-      text '<b>[Z]</b> and <b>[C]</b> or <b>[LMB]</b> and <b>[RMB]</b> to control left/right stomping, respectively.'
+      text '<b><u>Hold</u></b> <b>[Z]</b>/<b>[C]</b> or <b>[LMB]</b>/<b>[RMB]</b> to control left/right stomping, respectively.'
       br ''
       text 'Don\'t trip over the power lines, and watch out for tank bullets!'
       br ''
