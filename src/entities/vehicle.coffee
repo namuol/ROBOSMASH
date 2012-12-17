@@ -22,6 +22,7 @@ ig.module(
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    vehicle: true
     score: 150
     init: (x,y, settings) ->
       @parent x,y, settings
@@ -36,9 +37,10 @@ ig.module(
           while i < anim.sequence.length
             anim.sequence[i] += @num * 2
             ++i
-
-      @vel.y = 0
-      @vel.x = MIN_SPD + (Math.random() * SPD)
+      
+      if not @parked
+        @vel.y = 0
+        @vel.x = MIN_SPD + (Math.random() * SPD)
 
       if @pos.x > ig.system.width / 2
         @currentAnim.flip.x = true
@@ -53,6 +55,7 @@ ig.module(
         @kill()
 
     check: (other) ->
+      return if other.head
       snd = choose [
         @splode0
         @splode1

@@ -22,6 +22,7 @@ ig.module(
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
     score: SCORE
+    house:true
     init: (x,y, settings) ->
       @parent x,y, settings
 
@@ -53,6 +54,7 @@ ig.module(
 
     check: (other) ->
       return if @hidden
+      return if other.head
 
       if @currentAnim == @anims.busted
         return

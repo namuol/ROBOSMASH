@@ -13,12 +13,17 @@ ig.module(
       y: 32
     zIndex: 26
     gravityFactor: 0
+    type: ig.Entity.TYPE.A
     head: true
     animSheet: new ig.AnimationSheet 'media/gfx.png', 64, 32
     stall: 0
     hit: (stall) ->
+      return if @stall
+
       @stall = stall
       --ig.game.lives
+      for e in ig.game.getEntitiesByType 'EntityBullet'
+        e.kill()
 
     init: (x,y, settings) ->
       @addAnim 'head', 5, [1], true

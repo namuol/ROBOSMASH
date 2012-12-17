@@ -54,6 +54,8 @@ ig.module(
           ig.game.spawnEntity 'EntityBus', px, py, {}
         when 'firetruck'
           ig.game.spawnEntity 'EntityFiretruck', px, py, {}
+        when 'tank'
+          ig.game.spawnEntity 'EntityTank', px, py, {}
       ig.game.sortEntitiesDeferred()
 
     update: ->
@@ -82,5 +84,7 @@ ig.module(
             ig.game.spawnEntity 'EntityBus', px, py, {}
           when 'firetruck'
             ig.game.spawnEntity 'EntityFiretruck', px, py, {}
+          when 'tank'
+            ig.game.spawnEntity 'EntityTank', px, py, {}
         ig.game.sortEntitiesDeferred()
         @nextCar = MIN_DELAY + Math.random()*DELAY

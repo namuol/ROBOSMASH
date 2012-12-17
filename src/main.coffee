@@ -14,6 +14,9 @@ ig.module(
   'game.entities.vehicle'
   'game.entities.bus'
   'game.entities.firetruck'
+  'game.entities.tank'
+  'game.entities.bullet'
+  'game.entities.hurry'
   'game.entities.uibar'
 ).defines ->
   ig.Sound.use = [
@@ -32,12 +35,16 @@ ig.module(
 
   LEVEL_PROGRESS = [
       type:'suburban'
-      time: 5
-      dist: 3000
+      time: 10
+      dist: 1000
+      tank_prob:0.01
+      max_tanks: 1
     ,
       type:'suburban'
       time: 30
       dist: 5000
+      tank_prob:0.01
+      max_tanks: 1
     ,
   ]
 
@@ -58,6 +65,7 @@ ig.module(
   MyGame = ig.Game.extend
     # Sounds
     zapped: new ig.Sound 'media/sounds/zapped.*'
+    hurry: new ig.Sound 'media/sounds/hurry.*'
     lift: new ig.Sound 'media/sounds/lift.*'
     lifeup: new ig.Sound 'media/sounds/lifeup.*'
     stomp: new ig.Sound 'media/sounds/stomp.*'
@@ -73,13 +81,20 @@ ig.module(
     timeLeft: 0
     distLeft: 0
     font: new ig.Font('media/04b03.font.png')
-    gfx: new ig.Font('media/gfx.png')
+    gfx: new ig.AnimationSheet 'media/gfx.png', 16,16
+    bullet: new ig.AnimationSheet 'media/bullet.png', 16,16
+    tank: new ig.AnimationSheet 'media/tank.png', 16,16
+    ground: new ig.AnimationSheet 'media/ground.png', 16,16
+    vehicles: new ig.AnimationSheet 'media/vehicles.png', 16,16
+    commercial: new ig.AnimationSheet 'media/commercial.png', 16,16
+    decals: new ig.AnimationSheet 'media/large_decals.png', 16,16
     clearColor: '#d6eca3'
+    hurryPlayed: false
     progress: 0
     over: false
     gameOver: (reason) ->
       @over = true
-      if confirm 'Game Over: ' + reason + '\nYour score was '+@score+'\nTry Again?'
+      if confirm 'Game Over: ' + reason + '\nYour score was '+Math.round(@score)+'\nTry Again?'
         @init()
 
     scored: (score) ->
@@ -118,6 +133,8 @@ ig.module(
       @over = false
       @lives = START_LIVES
       @score = 0
+      @time = 0
+      @new_life_counter = NEW_LIFE_COUNT
 
       @progress = 0
       @timeLeft = LEVEL_PROGRESS[@progress].time
@@ -232,6 +249,13 @@ ig.module(
       @shx = 2*Math.random() * @shakex
       @shy = 2*Math.random() * @shakey
 
+      if Math.random() < LEVEL_PROGRESS[@progress].tank_prob
+        if @getEntitiesByType('EntityTank').length < LEVEL_PROGRESS[@progress].max_tanks
+          if Math.random() < 0.5
+            @spawnEntity 'EntityTank', ig.system.width, @screen.y + ig.system.height*1.5
+          else
+            @spawnEntity 'EntityTank', -24, @screen.y + ig.system.height*1.5
+
       @screen.x += @shx
       @screen.y += @shy
 
@@ -255,8 +279,15 @@ ig.module(
 
       @parent()
 
+      if @timeLeft < LEVEL_PROGRESS[@progress].time*0.2
+        if @getEntitiesByType('EntityHurry').length == 0
+          @spawnEntity 'EntityHurry', 0,0,{}
+
       if @timeLeft < 0 and !@over
         @gameOver 'you didn\'t reach the checkpoint in time.'
+      else if @lives < 0
+        @gameOver 'you ran out of lives.'
+
 
     draw: ->
       # Draw all entities and backgroundMaps

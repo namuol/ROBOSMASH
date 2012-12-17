@@ -14,6 +14,7 @@ ig.module(
     type: ig.Entity.TYPE.B
     checkAgainst: ig.Entity.TYPE.A
     animSheet: new ig.AnimationSheet 'media/ppl.png', 8,9
+    person: true
     init: (x,y, settings) ->
       @parent x,y, settings
       @num = Math.floor(Math.random() * ROW_COUNT)
