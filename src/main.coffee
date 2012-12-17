@@ -17,7 +17,9 @@ ig.module(
   'game.entities.tank'
   'game.entities.bullet'
   'game.entities.hurry'
+  'game.entities.clear'
   'game.entities.uibar'
+  'game.entities.splat'
   'game.entities.peoplespawner'
 ).defines ->
   ig.Sound.use = [
@@ -26,6 +28,7 @@ ig.module(
     ig.Sound.FORMAT.M4A
   ]
 
+  ig.SoundManager.volume = 0.5
   ig.Sound.channels = 2
   LEVEL_TYPE_CHANGES = [
     'rural'
@@ -88,7 +91,8 @@ ig.module(
   
   MAX_LIVES = 5
   START_LIVES = 3
-  NEW_LIFE_COUNT = 75
+  NEW_LIFE_COUNT = 150
+
 
   MyGame = ig.Game.extend
     # Sounds
@@ -97,10 +101,14 @@ ig.module(
     lift: new ig.Sound 'media/sounds/lift.*'
     lifeup: new ig.Sound 'media/sounds/lifeup.*'
     stomp: new ig.Sound 'media/sounds/stomp.*'
+    scream0: new ig.Sound 'media/sounds/scream0.*'
+    scream1: new ig.Sound 'media/sounds/scream1.*'
+    scream2: new ig.Sound 'media/sounds/scream2.*'
     splode0: new ig.Sound 'media/sounds/splode0.*'
     splode1: new ig.Sound 'media/sounds/splode1.*'
     splode2: new ig.Sound 'media/sounds/splode2.*'
     splode3: new ig.Sound 'media/sounds/splode3.*'
+    check: new ig.Sound 'media/sounds/check.*'
     ui: new ig.AnimationSheet 'media/gfx.png', 32,32
     gravity: 900
     score: 0
@@ -162,7 +170,7 @@ ig.module(
       @lives = START_LIVES
       @score = 0
       @time = 0
-      @new_life_counter = NEW_LIFE_COUNT
+      @new_life_counter = 0
 
       @progress = 0
       @timeLeft = LEVEL_PROGRESS[@progress].time
@@ -270,9 +278,12 @@ ig.module(
 
         @distLeft -= dy
         if @distLeft <= 0
+          @spawnEntity 'EntityClear', 0,0,{}
+
           @progress = Math.min LEVEL_PROGRESS.length-1, @progress + 1
           @timeLeft = LEVEL_PROGRESS[@progress].time
           @distLeft = LEVEL_PROGRESS[@progress].dist
+          @score += @timeLeft * 1000
 
       @shx = 2*Math.random() * @shakex
       @shy = 2*Math.random() * @shakey

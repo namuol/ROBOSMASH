@@ -53,6 +53,8 @@ body ->
       br ''
       text '<b>[Z]</b> and <b>[C]</b> or <b>[LMB]</b> and <b>[RMB]</b> to control left/right stomping, respectively.'
       br ''
+      text 'Don\'t trip over the power lines, and watch out for tank bullets!'
+      br ''
       br ''
       text 'Created by <a target="_blank" href="//namuol.github.com">Louis Acresti</a> for <a target="_blank" href="http://www.ludumdare.com/compo/ludum-dare-25/">Ludum Dare 25</a>.'
       br ''

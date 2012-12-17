@@ -65,7 +65,7 @@ ig.module(
         @splode2
         @splode3
       ]
-      snd.volume = 0.6
+      snd.volume = 0.25
       snd.play()
       i = 0
 

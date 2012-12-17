@@ -1,8 +1,7 @@
-ImpactJS Starter Template
--------------------------
+ROBOSMASH/BOTWALK (working title)
+---------------------------------
 
-This is my starter template for ImpactJS games.
+Made for Ludum Dare 48 hour game competition.
 
-I like to use CoffeeScript, so this essentially is just the skeleton and build script I need to get started.
+Built with ImpactJS.
 
-The ImpactJS libraries are not included, for obvious reasons, but the contents of the impact directory should be put into the "build" directory.

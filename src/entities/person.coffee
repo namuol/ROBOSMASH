@@ -13,6 +13,11 @@ ig.module(
       y: 8
     type: ig.Entity.TYPE.B
     checkAgainst: ig.Entity.TYPE.A
+
+    scream0: new ig.Sound 'media/sounds/scream0.*'
+    scream1: new ig.Sound 'media/sounds/scream1.*'
+    scream2: new ig.Sound 'media/sounds/scream2.*'
+
     animSheet: new ig.AnimationSheet 'media/ppl.png', 8,9
     person: true
     init: (x,y, settings) ->
@@ -22,6 +27,7 @@ ig.module(
       @addAnim 'idle_up', 5, [3], true
       @addAnim 'run_down', 0.15, [1,0,2,0]
       @addAnim 'run_up', 0.15, [4,3,5,3]
+      @canDie = false
 
       if @num
         for own k,anim of @anims
@@ -48,8 +54,20 @@ ig.module(
 
       @parent arguments...
 
-      if ((@pos.y + @size.y) < ig.game.screen.y) or (@pos.y > ig.game.screen.y + ig.system.height*1.25)
+      if ((@pos.y + @size.y) < ig.game.screen.y)
         @kill()
 
+      @canDie = true
+
     check: (other) ->
+      return if not @canDie
+      return if other.head
+      if Math.random() < 0.1
+        ig.game.spawnEntity 'EntitySplat', @pos.x, @pos.y, {}
+      ###
+      if Math.random() < 0.1
+        num = Math.floor Math.random()*3
+        @['scream'+num].volume = 0.5
+        @['scream'+num].play()
+      ###
       @kill()
